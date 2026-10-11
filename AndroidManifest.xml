@@ -3393,6 +3393,20 @@
             android:theme="@style/GlifTheme.Light"
             android:exported="false" />
 
+        <activity android:name=".security.RebootCredentialMainActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/GlifTheme.Light"
+            android:permission="android.permission.MANAGE_SAFETY_CENTER"
+            android:exported="false">
+            <meta-data android:name="com.android.settings.HIGHLIGHT_MENU_KEY"
+                       android:value="@string/menu_key_safety_center"/>
+        </activity>
+
+        <activity android:name=".security.RebootCredentialSetupActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/GlifTheme.Light"
+            android:exported="false" />
+
         <activity android:name=".biometrics.fingerprint.FingerprintEnrollSuggestionActivity"
             android:exported="true"
             android:icon="@drawable/ic_suggestion_fingerprint">

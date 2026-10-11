@@ -144,7 +144,7 @@ public class DuressPasswordSetupActivity extends DuressPasswordActivity
                 Log.e(TAG, "setDuressCredentials failed", e);
 
                 var d = new AlertDialog.Builder(this);
-                d.setMessage(getString(R.string.duress_pwd_save_error, e.toString()));
+                d.setMessage(getString(R.string.duress_pwd_save_error, describe(e)));
                 d.setNeutralButton(R.string.duress_pwd_error_dialog_dismiss, null);
                 d.show();
                 return;
@@ -167,6 +167,16 @@ public class DuressPasswordSetupActivity extends DuressPasswordActivity
             });
             warning.show();
         }
+    }
+
+    // the service reports a collision with the reboot credential with a fixed message
+    private String describe(Exception e) {
+        for (Throwable t = e; t != null; t = t.getCause()) {
+            if (String.valueOf(t.getMessage()).startsWith("collision: reboot credential")) {
+                return getString(R.string.duress_pwd_collision_reboot);
+            }
+        }
+        return e.toString();
     }
 
     private boolean checkCredentialInputErrors(DuressCredentialType ct) {

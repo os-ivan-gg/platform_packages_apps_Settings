@@ -87,4 +87,10 @@
         android:title="@string/duress_pwd_pref_title"
         settings:controller="com.android.settings.safetycenter.ui.DuressPasswordPrefController"/>
 
+    <Preference
+        android:key="reboot_credential"
+        android:order="1001"
+        android:title="@string/reboot_cred_pref_title"
+        settings:controller="com.android.settings.safetycenter.ui.RebootCredentialPrefController"/>
+
 </PreferenceScreen>
