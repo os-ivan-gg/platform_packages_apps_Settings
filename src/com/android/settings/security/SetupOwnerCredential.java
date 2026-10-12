@@ -10,6 +10,7 @@ import android.provider.Settings;
 
 import androidx.annotation.Nullable;
 
+import com.android.internal.widget.LockPatternUtils;
 import com.android.internal.widget.LockscreenCredential;
 
 /**
@@ -20,27 +21,31 @@ public final class SetupOwnerCredential {
     private static final long KEEP_MS = 10 * 60 * 1000;
 
     private static final Handler sHandler = new Handler(Looper.getMainLooper());
-    private static final Runnable sExpire = SetupOwnerCredential::clear;
 
     private static LockscreenCredential sCredential;
     private static long sSetAt;
+    // a timer only clears the credential it was set for
+    private static int sGeneration;
 
     private SetupOwnerCredential() {}
 
     public static synchronized void remember(LockscreenCredential credential, int userId) {
         clearLocked();
         if (userId != UserHandle.USER_SYSTEM || credential == null || !credential.isPin()
-                || isSetupComplete()) {
+                || credential.size() < LockPatternUtils.MIN_NEW_PIN_SIZE || isSetupComplete()) {
             return;
         }
         sCredential = credential.duplicate();
         sSetAt = SystemClock.elapsedRealtime();
         // dropped on time even if the protected space step never runs
-        sHandler.postDelayed(sExpire, KEEP_MS);
+        final int generation = ++sGeneration;
+        sHandler.postDelayed(() -> expire(generation), KEEP_MS);
     }
 
-    public static synchronized void clear() {
-        clearLocked();
+    private static synchronized void expire(int generation) {
+        if (generation == sGeneration) {
+            clearLocked();
+        }
     }
 
     /** The kept credential, handed over once; the caller zeroizes it. */
@@ -48,16 +53,20 @@ public final class SetupOwnerCredential {
     public static synchronized LockscreenCredential take() {
         LockscreenCredential c = sCredential;
         sCredential = null;
-        sHandler.removeCallbacks(sExpire);
-        if (c != null && (SystemClock.elapsedRealtime() - sSetAt > KEEP_MS || isSetupComplete())) {
-            c.zeroize();
-            return null;
+        sGeneration++;
+        boolean keep = false;
+        try {
+            keep = c != null && SystemClock.elapsedRealtime() - sSetAt <= KEEP_MS
+                    && !isSetupComplete();
+        } finally {
+            if (c != null && !keep) {
+                c.zeroize();
+            }
         }
-        return c;
+        return keep ? c : null;
     }
 
     private static void clearLocked() {
-        sHandler.removeCallbacks(sExpire);
         if (sCredential != null) {
             sCredential.zeroize();
             sCredential = null;

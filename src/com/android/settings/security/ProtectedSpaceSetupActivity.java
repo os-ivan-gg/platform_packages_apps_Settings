@@ -120,6 +120,15 @@ public class ProtectedSpaceSetupActivity extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        // finished meanwhile, e.g. by an earlier instance of this screen
+        if (!mBusy && hasProtectedSpace()) {
+            finish();
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         zeroize(mOwner, mProtected, mDuress, mDuressPassword, mReboot, mFirstEntry);
         if (mInput != null) {
@@ -222,7 +231,8 @@ public class ProtectedSpaceSetupActivity extends Activity {
     private boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE
                 || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER
-                        && event.getAction() == KeyEvent.ACTION_DOWN)) {
+                        && event.getAction() == KeyEvent.ACTION_DOWN
+                        && event.getRepeatCount() == 0)) {
             onPrimary();
             return true;
         }
@@ -236,11 +246,15 @@ public class ProtectedSpaceSetupActivity extends Activity {
         Step previous = switch (mStep) {
             case INTRO -> null;
             case OWNER -> Step.INTRO;
-            case PROTECTED, PROTECTED_CONFIRM -> mOwnerFromSetup ? Step.INTRO : Step.OWNER;
-            case DURESS, DURESS_CONFIRM -> Step.PROTECTED;
-            case DURESS_PASSWORD, DURESS_PASSWORD_CONFIRM -> Step.DURESS;
-            case REBOOT, REBOOT_CONFIRM -> mDuress == null ? Step.DURESS
-                    : Step.DURESS_PASSWORD;
+            case PROTECTED -> mOwnerFromSetup ? Step.INTRO : Step.OWNER;
+            case DURESS -> Step.PROTECTED;
+            case DURESS_PASSWORD -> Step.DURESS;
+            case REBOOT -> mDuress == null ? Step.DURESS : Step.DURESS_PASSWORD;
+            // back from re-entering goes to choosing the same one again
+            case PROTECTED_CONFIRM -> Step.PROTECTED;
+            case DURESS_CONFIRM -> Step.DURESS;
+            case DURESS_PASSWORD_CONFIRM -> Step.DURESS_PASSWORD;
+            case REBOOT_CONFIRM -> Step.REBOOT;
             default -> null;
         };
         if (previous == null) {
@@ -503,7 +517,8 @@ public class ProtectedSpaceSetupActivity extends Activity {
             finish();
             return;
         }
-        // a retry starts over; the owner's PIN from first setup stays
+        // a retry starts over and asks for the owner's PIN, in case that was what failed
+        mOwnerFromSetup = false;
         forgetFrom(Step.OWNER);
         show(Step.INTRO);
         new AlertDialog.Builder(this)
