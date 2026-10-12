@@ -20,6 +20,7 @@ import android.content.Context
 import android.icu.text.ListFormatter
 import android.icu.util.ULocale
 import android.safetycenter.SafetyCenterEntry
+import com.android.settings.ext.ExtSettingControllerHelper
 import com.android.settingslib.safetycenter.SafetySourcePreference
 
 /**
@@ -43,7 +44,9 @@ class SourceListSubpagePreferenceController(context: Context, preferenceKey: Str
                 .map { it.title }
                 .toMutableList()
 
-        if (preferenceKey == SafetyCenterSubpageRegistry.DEVICE_UNLOCK_SUBPAGE_KEY && mContext.user.isSystem()) {
+        // listed where the duress entry shows: the user that manages the alternates
+        if (preferenceKey == SafetyCenterSubpageRegistry.DEVICE_UNLOCK_SUBPAGE_KEY &&
+                ExtSettingControllerHelper.getAlternatesSettingAvailability(mContext) == AVAILABLE) {
             titles += mContext.getText(com.android.settings.R.string.duress_pwd_pref_title)
         }
 
