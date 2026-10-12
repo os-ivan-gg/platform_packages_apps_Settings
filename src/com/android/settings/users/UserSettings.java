@@ -83,6 +83,7 @@ import com.android.internal.widget.LockPatternUtils;
 import com.android.settings.R;
 import com.android.settings.SettingsPreferenceFragment;
 import com.android.settings.Utils;
+import com.android.settings.ext.ExtSettingControllerHelper;
 import com.android.settings.core.SubSettingLauncher;
 import com.android.settings.password.ChooseLockGeneric;
 import com.android.settings.password.ChooseLockSettingsHelper;
@@ -330,7 +331,8 @@ public class UserSettings extends SettingsPreferenceFragment
         super.onCreate(icicle);
         addPreferencesFromResource(R.xml.user_settings);
         final Activity activity = getActivity();
-        if (!WizardManagerHelper.isDeviceProvisioned(activity)) {
+        if (!WizardManagerHelper.isDeviceProvisioned(activity)
+                || ExtSettingControllerHelper.isProtectedSpaceHidden(activity)) {
             activity.finish();
             return;
         }

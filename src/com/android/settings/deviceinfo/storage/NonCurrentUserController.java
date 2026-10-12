@@ -31,6 +31,7 @@ import androidx.preference.PreferenceScreen;
 
 import com.android.settings.core.PreferenceControllerMixin;
 import com.android.settings.deviceinfo.StorageItemPreference;
+import com.android.settings.ext.ExtSettingControllerHelper;
 import com.android.settingslib.core.AbstractPreferenceController;
 
 import java.util.ArrayList;
@@ -71,6 +72,9 @@ public class NonCurrentUserController extends AbstractPreferenceController imple
             Context context, UserManager userManager) {
         int currentUserId = ActivityManager.getCurrentUser();
         List<NonCurrentUserController> controllers = new ArrayList<>();
+        if (ExtSettingControllerHelper.isProtectedSpaceHidden(context)) {
+            return controllers;
+        }
         List<UserInfo> infos = userManager.getUsers();
         for (UserInfo info : infos) {
             if (info.id == currentUserId || !info.isFull()) {

@@ -28,6 +28,7 @@ import androidx.annotation.Nullable;
 import androidx.preference.Preference;
 
 import com.android.internal.widget.LockPatternUtils;
+import com.android.settings.ext.ExtSettingControllerHelper;
 import com.android.settings.Utils;
 import com.android.settings.biometrics.activeunlock.ActiveUnlockStatusUtils;
 import com.android.settings.core.BasePreferenceController;
@@ -81,6 +82,10 @@ public abstract class BiometricStatusPreferenceController extends BasePreference
 
     @Override
     public int getAvailabilityStatus() {
+        // biometrics unlock user 0 only when the device has a protected space
+        if (ExtSettingControllerHelper.isProtectedSpaceUser(mContext)) {
+            return DISABLED_FOR_USER;
+        }
         if (mActiveUnlockStatusUtils.isAvailable()) {
             return getAvailabilityStatusWithWorkProfileCheck();
         }

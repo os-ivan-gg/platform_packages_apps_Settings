@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="protected_space_title">Protected space</string>
+    <string name="protected_space_description">A second space with its own PIN, opened from the same lock screen. This phone otherwise works as usual and doesn\'t show the protected space. Set a duress PIN and password too: entering either one at any prompt wipes the phone. A reboot PIN restarts the phone so that everything is locked again. All PINs need 6 digits or more and must differ from each other.</string>
+    <string name="protected_space_owner_pin">Your PIN for this phone</string>
+    <string name="protected_space_protected_pin">Protected space PIN</string>
+    <string name="protected_space_duress_pin">Duress PIN</string>
+    <string name="protected_space_duress_password">Duress password</string>
+    <string name="protected_space_reboot_pin">Reboot PIN (optional)</string>
+    <string name="protected_space_confirm">Confirm</string>
+    <string name="protected_space_set_up">Set up</string>
+    <string name="protected_space_skip">Skip</string>
+    <string name="protected_space_too_short">6 digits or more</string>
+    <string name="protected_space_mismatch">Doesn\'t match</string>
+    <string name="protected_space_working">Setting up…</string>
+    <string name="protected_space_failed">Couldn\'t set up the protected space: <xliff:g id="reason">%1$s</xliff:g></string>
+    <string name="protected_space_done">Protected space set up</string>
+</resources>

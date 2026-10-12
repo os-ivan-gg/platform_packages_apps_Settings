@@ -50,6 +50,7 @@ import androidx.preference.TwoStatePreference;
 import com.android.settings.R;
 import com.android.settings.SettingsPreferenceFragment;
 import com.android.settings.Utils;
+import com.android.settings.ext.ExtSettingControllerHelper;
 import com.android.settings.core.SubSettingLauncher;
 import com.android.settings.password.ChooseLockSettingsHelper;
 import com.android.settingslib.RestrictedLockUtils;
@@ -140,6 +141,10 @@ public class UserDetailsSettings extends SettingsPreferenceFragment
         super.onCreate(icicle);
 
         final Context context = getActivity();
+        if (ExtSettingControllerHelper.isProtectedSpaceHidden(context)) {
+            getActivity().finish();
+            return;
+        }
         mUserManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
         mUserCaps = UserCapabilities.create(context);
         addPreferencesFromResource(R.xml.user_details_settings);

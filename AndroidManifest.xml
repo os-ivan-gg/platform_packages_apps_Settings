@@ -3402,6 +3402,16 @@
                        android:value="@string/menu_key_safety_center"/>
         </activity>
 
+        <activity android:name=".security.ProtectedSpaceSetupActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/GlifTheme.Light"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.settings.SETUP_PROTECTED_SPACE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".security.RebootCredentialSetupActivity"
             android:excludeFromRecents="true"
             android:theme="@style/GlifTheme.Light"

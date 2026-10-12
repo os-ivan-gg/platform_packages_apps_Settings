@@ -24,6 +24,7 @@ import android.os.UserManager;
 import com.android.settings.R;
 import com.android.settings.Utils;
 import com.android.settings.core.BasePreferenceController;
+import com.android.settings.ext.ExtSettingControllerHelper;
 
 public class MultiUserPreferenceController extends BasePreferenceController {
 
@@ -34,7 +35,9 @@ public class MultiUserPreferenceController extends BasePreferenceController {
     @Override
     public int getAvailabilityStatus() {
         return (UserHandle.MU_ENABLED && UserManager.supportsMultipleUsers()
-                && !Utils.isMonkeyRunning()) ? AVAILABLE : UNSUPPORTED_ON_DEVICE;
+                && !Utils.isMonkeyRunning()
+                && !ExtSettingControllerHelper.isProtectedSpaceHidden(mContext))
+                ? AVAILABLE : UNSUPPORTED_ON_DEVICE;
     }
 
     @Override

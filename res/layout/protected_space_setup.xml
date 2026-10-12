@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.setupdesign.GlifLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/glif_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:icon="@drawable/ic_lock"
+>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        style="@style/SudContentFrame">
+
+        <EditText
+            android:id="@+id/owner_pin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/protected_space_owner_pin"
+            android:imeOptions="actionNext"
+            android:inputType="numberPassword" />
+
+        <EditText
+            android:id="@+id/protected_pin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:hint="@string/protected_space_protected_pin"
+            android:imeOptions="actionNext"
+            android:inputType="numberPassword" />
+
+        <EditText
+            android:id="@+id/protected_pin_confirmation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/protected_space_confirm"
+            android:imeOptions="actionNext"
+            android:inputType="numberPassword" />
+
+        <EditText
+            android:id="@+id/duress_pin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:hint="@string/protected_space_duress_pin"
+            android:imeOptions="actionNext"
+            android:inputType="numberPassword" />
+
+        <EditText
+            android:id="@+id/duress_pin_confirmation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/protected_space_confirm"
+            android:imeOptions="actionNext"
+            android:inputType="numberPassword" />
+
+        <EditText
+            android:id="@+id/duress_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:hint="@string/protected_space_duress_password"
+            android:imeOptions="actionNext"
+            android:inputType="textPassword" />
+
+        <EditText
+            android:id="@+id/duress_password_confirmation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/protected_space_confirm"
+            android:imeOptions="actionNext"
+            android:inputType="textPassword" />
+
+        <EditText
+            android:id="@+id/reboot_pin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:hint="@string/protected_space_reboot_pin"
+            android:imeOptions="actionDone"
+            android:inputType="numberPassword" />
+
+    </LinearLayout>
+</com.google.android.setupdesign.GlifLayout>
