@@ -81,6 +81,20 @@
         settings:safetySource="AndroidWearUnlock"
         settings:profile="work_profile" />
 
+    <SwitchPreferenceCompat
+        android:key="protected_space_indicator"
+        android:order="998"
+        android:title="@string/protected_space_indicator_title"
+        android:summary="@string/protected_space_indicator_summary"
+        settings:controller="com.android.settings.safetycenter.ui.ProtectedSpaceIndicatorPrefController"/>
+
+    <Preference
+        android:key="protected_space"
+        android:order="999"
+        android:title="@string/protected_space_title"
+        android:summary="@string/protected_space_pref_summary"
+        settings:controller="com.android.settings.safetycenter.ui.ProtectedSpacePrefController"/>
+
     <Preference
         android:key="duress_password"
         android:order="1000"

@@ -1,18 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="protected_space_title">Protected space</string>
-    <string name="protected_space_description">A second space with its own PIN, opened from the same lock screen. This phone otherwise works as usual and doesn\'t show the protected space. Set a duress PIN and password too: entering either one at any prompt wipes the phone. A reboot PIN restarts the phone so that everything is locked again. All PINs need 6 digits or more and must differ from each other.</string>
-    <string name="protected_space_owner_pin">Your PIN for this phone</string>
-    <string name="protected_space_protected_pin">Protected space PIN</string>
-    <string name="protected_space_duress_pin">Duress PIN</string>
-    <string name="protected_space_duress_password">Duress password</string>
-    <string name="protected_space_reboot_pin">Reboot PIN (optional)</string>
-    <string name="protected_space_confirm">Confirm</string>
+    <string name="protected_space_pref_summary">A second space opened with its own PIN from the same lock screen</string>
+    <string name="protected_space_intro">Set up a second space with its own PIN. You open it from the same lock screen by entering its PIN instead of yours. Everywhere else, this phone looks and works as usual and doesn\'t show the protected space.\n\nYou\'ll also choose a duress PIN and password, which wipe the phone when entered at any prompt, and optionally a reboot PIN, which restarts the phone so everything is locked again.</string>
     <string name="protected_space_set_up">Set up</string>
     <string name="protected_space_skip">Skip</string>
-    <string name="protected_space_too_short">6 digits or more</string>
-    <string name="protected_space_mismatch">Doesn\'t match</string>
-    <string name="protected_space_working">Setting up…</string>
+    <string name="protected_space_next">Next</string>
+    <string name="protected_space_confirm_button">Confirm</string>
+
+    <string name="protected_space_owner_header">Enter your PIN</string>
+    <string name="protected_space_owner_description">Confirm the PIN you use to unlock this phone.</string>
+    <string name="protected_space_protected_header">Choose a PIN for the protected space</string>
+    <string name="protected_space_protected_description">Entering this PIN on the lock screen opens the protected space. Use 6 digits or more, different from your PIN.</string>
+    <string name="protected_space_duress_header">Choose a duress PIN</string>
+    <string name="protected_space_duress_description">Entering this PIN at any prompt wipes the phone. It must differ from the other PINs.</string>
+    <string name="protected_space_duress_password_header">Choose a duress password</string>
+    <string name="protected_space_duress_password_description">Wipes the phone when entered where a password is asked. Use at least 4 characters.</string>
+    <string name="protected_space_reboot_header">Choose a reboot PIN</string>
+    <string name="protected_space_reboot_description">Optional. Entering this PIN restarts the phone, so that both spaces are locked until their PINs are entered again.</string>
+    <string name="protected_space_reenter_header">Re-enter the PIN</string>
+    <string name="protected_space_reenter_password_header">Re-enter the password</string>
+    <string name="protected_space_working_header">Setting up the protected space</string>
+    <string name="protected_space_working_description">This takes a few seconds.</string>
+
+    <string name="protected_space_too_short">Must be 6 digits or more</string>
+    <string name="protected_space_password_too_short">Must be at least 4 characters</string>
+    <string name="protected_space_mismatch">Doesn\'t match, try again</string>
+    <string name="protected_space_taken">Choose a different PIN</string>
+    <string name="protected_space_wrong_owner">Wrong PIN</string>
     <string name="protected_space_failed">Couldn\'t set up the protected space: <xliff:g id="reason">%1$s</xliff:g></string>
     <string name="protected_space_done">Protected space set up</string>
+    <string name="protected_space_indicator_title">Protected space icon</string>
+    <string name="protected_space_indicator_summary">Show a shield in the status bar while this space is open, so you can tell it from the main space</string>
 </resources>
