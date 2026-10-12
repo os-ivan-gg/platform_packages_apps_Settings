@@ -33,6 +33,7 @@ import com.android.internal.widget.LockscreenCredential;
 import com.android.internal.widget.VerifyCredentialResponse;
 import com.android.settings.R;
 import com.android.settings.safetycenter.LockScreenSafetySource;
+import com.android.settings.security.SetupOwnerCredential;
 
 /**
  * An invisible retained worker fragment to track the AsyncWork that saves (and optionally
@@ -118,6 +119,7 @@ public class SaveAndFinishWorker extends Fragment {
             return Pair.create(false, null);
         }
 
+        SetupOwnerCredential.remember(mChosenCredential, userId);
         unifyProfileCredentialIfRequested();
 
         @LockPatternUtils.VerifyFlag int flags = 0;

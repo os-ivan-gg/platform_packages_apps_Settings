@@ -29,15 +29,21 @@ import com.google.android.setupcompat.template.FooterButton;
 import com.google.android.setupdesign.GlifLayout;
 import com.google.android.setupdesign.util.ThemeHelper;
 
+import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.Base64;
+
 /**
  * Sets up the protected space, one question per screen like the rest of setup: the owner's
- * PIN, the protected space PIN, the duress PIN and password, and an optional reboot PIN. Runs
- * from first setup and from Settings in user 0 while no protected space exists.
+ * PIN, the protected space PIN, an optional duress PIN and password, and an optional reboot PIN.
+ * Runs from first setup and from Settings in user 0 while no protected space exists. In first
+ * setup the owner's PIN comes from the screen lock step and isn't asked again.
  */
 public class ProtectedSpaceSetupActivity extends Activity {
     private static final String TAG = "ProtectedSpaceSetup";
     private static final int MIN_PIN = 6;
     private static final int MIN_PASSWORD = 4;
+    private static final int RANDOM_PASSWORD_BYTES = 24;
 
     private enum Step {
         INTRO, OWNER, PROTECTED, PROTECTED_CONFIRM, DURESS, DURESS_CONFIRM, DURESS_PASSWORD,
@@ -55,6 +61,8 @@ public class ProtectedSpaceSetupActivity extends Activity {
     // entered so far; zeroized when the screen goes away
     private LockscreenCredential mOwner, mProtected, mDuress, mDuressPassword, mReboot;
     private LockscreenCredential mFirstEntry;
+    // the owner's PIN came from the screen lock step of first setup
+    private boolean mOwnerFromSetup;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,6 +101,9 @@ public class ProtectedSpaceSetupActivity extends Activity {
                 .build();
         footerBar.setPrimaryButton(mPrimary);
         footerBar.setSecondaryButton(mSecondary);
+
+        mOwner = SetupOwnerCredential.take();
+        mOwnerFromSetup = mOwner != null;
 
         getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
                 OnBackInvokedDispatcher.PRIORITY_DEFAULT, this::onBack);
@@ -197,8 +208,9 @@ public class ProtectedSpaceSetupActivity extends Activity {
                     R.string.protected_space_confirm_button;
             default -> R.string.protected_space_next;
         });
-        // skip: the whole space on the intro, the optional reboot PIN on its step
-        boolean skippable = step == Step.INTRO || step == Step.REBOOT;
+        // skip: the whole space on the intro, or one of the optional credentials
+        boolean skippable = step == Step.INTRO || step == Step.DURESS
+                || step == Step.DURESS_PASSWORD || step == Step.REBOOT;
         mSecondary.setVisibility(skippable ? View.VISIBLE : View.GONE);
 
         if (field) {
@@ -224,10 +236,11 @@ public class ProtectedSpaceSetupActivity extends Activity {
         Step previous = switch (mStep) {
             case INTRO -> null;
             case OWNER -> Step.INTRO;
-            case PROTECTED, PROTECTED_CONFIRM -> Step.OWNER;
+            case PROTECTED, PROTECTED_CONFIRM -> mOwnerFromSetup ? Step.INTRO : Step.OWNER;
             case DURESS, DURESS_CONFIRM -> Step.PROTECTED;
             case DURESS_PASSWORD, DURESS_PASSWORD_CONFIRM -> Step.DURESS;
-            case REBOOT, REBOOT_CONFIRM -> Step.DURESS_PASSWORD;
+            case REBOOT, REBOOT_CONFIRM -> mDuress == null ? Step.DURESS
+                    : Step.DURESS_PASSWORD;
             default -> null;
         };
         if (previous == null) {
@@ -244,7 +257,7 @@ public class ProtectedSpaceSetupActivity extends Activity {
         zeroize(mFirstEntry);
         mFirstEntry = null;
         int from = step.ordinal();
-        if (from <= Step.OWNER.ordinal()) {
+        if (from <= Step.OWNER.ordinal() && !mOwnerFromSetup) {
             zeroize(mOwner);
             mOwner = null;
         }
@@ -272,6 +285,17 @@ public class ProtectedSpaceSetupActivity extends Activity {
         }
         if (mStep == Step.INTRO) {
             finish();
+        } else if (mStep == Step.DURESS) {
+            // no duress PIN, so no duress password either
+            zeroize(mDuress, mDuressPassword);
+            mDuress = null;
+            mDuressPassword = null;
+            show(Step.REBOOT);
+        } else if (mStep == Step.DURESS_PASSWORD) {
+            // duress needs a password too; one nobody knows leaves only the PIN usable
+            zeroize(mDuressPassword);
+            mDuressPassword = randomPassword();
+            show(Step.REBOOT);
         } else if (mStep == Step.REBOOT) {
             zeroize(mReboot);
             mReboot = null;
@@ -294,6 +318,13 @@ public class ProtectedSpaceSetupActivity extends Activity {
         return s.length() >= MIN_PIN && s.chars().allMatch(Character::isDigit);
     }
 
+    // With auto-confirm the lock screen submits as soon as the owner's PIN length is typed,
+    // so a longer PIN could never be entered; every PIN then has the owner's length.
+    private boolean wrongLengthForAutoConfirm(String s) {
+        return mOwner != null && s.length() != mOwner.size()
+                && new LockPatternUtils(this).isAutoPinConfirmEnabled(UserHandle.USER_SYSTEM);
+    }
+
     // a new PIN must differ from every credential chosen before it
     private boolean taken(LockscreenCredential c) {
         for (LockscreenCredential other : new LockscreenCredential[] {mOwner, mProtected,
@@ -311,7 +342,7 @@ public class ProtectedSpaceSetupActivity extends Activity {
         }
         String text = mInput.getText().toString();
         switch (mStep) {
-            case INTRO -> show(Step.OWNER);
+            case INTRO -> show(mOwnerFromSetup ? Step.PROTECTED : Step.OWNER);
             case OWNER -> {
                 if (!validPin(text)) {
                     error(R.string.protected_space_too_short);
@@ -322,6 +353,12 @@ public class ProtectedSpaceSetupActivity extends Activity {
             case PROTECTED, DURESS, REBOOT -> {
                 if (!validPin(text)) {
                     error(R.string.protected_space_too_short);
+                    return;
+                }
+                if (wrongLengthForAutoConfirm(text)) {
+                    mError.setText(getString(R.string.protected_space_auto_confirm_length,
+                            mOwner.size()));
+                    mInput.getText().clear();
                     return;
                 }
                 LockscreenCredential c = entered();
@@ -427,8 +464,10 @@ public class ProtectedSpaceSetupActivity extends Activity {
         LockPatternUtils lpu = new LockPatternUtils(this);
         LockscreenCredential owner = mOwner.duplicate();
         LockscreenCredential protectedPin = mProtected.duplicate();
-        LockscreenCredential duress = mDuress.duplicate();
-        LockscreenCredential duressPassword = mDuressPassword.duplicate();
+        LockscreenCredential duress = mDuress != null ? mDuress.duplicate()
+                : LockscreenCredential.createNone();
+        LockscreenCredential duressPassword = mDuress != null ? mDuressPassword.duplicate()
+                : LockscreenCredential.createNone();
         LockscreenCredential reboot = mReboot != null ? mReboot.duplicate()
                 : LockscreenCredential.createNone();
         AsyncTask.execute(() -> {
@@ -446,6 +485,14 @@ public class ProtectedSpaceSetupActivity extends Activity {
         });
     }
 
+    private static LockscreenCredential randomPassword() {
+        byte[] bytes = new byte[RANDOM_PASSWORD_BYTES];
+        new SecureRandom().nextBytes(bytes);
+        String password = Base64.getEncoder().withoutPadding().encodeToString(bytes);
+        Arrays.fill(bytes, (byte) 0);
+        return LockscreenCredential.createPassword(password);
+    }
+
     private void onProvisioned(@Nullable Exception error) {
         mBusy = false;
         if (isDestroyed()) {
@@ -456,6 +503,8 @@ public class ProtectedSpaceSetupActivity extends Activity {
             finish();
             return;
         }
+        // a retry starts over; the owner's PIN from first setup stays
+        forgetFrom(Step.OWNER);
         show(Step.INTRO);
         new AlertDialog.Builder(this)
                 .setMessage(getString(R.string.protected_space_failed,
