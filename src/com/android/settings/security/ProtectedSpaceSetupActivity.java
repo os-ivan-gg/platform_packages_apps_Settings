@@ -235,7 +235,35 @@ public class ProtectedSpaceSetupActivity extends Activity {
             finish();
             return;
         }
+        forgetFrom(previous);
         show(previous);
+    }
+
+    // going back to a step drops what was chosen there and after it
+    private void forgetFrom(Step step) {
+        zeroize(mFirstEntry);
+        mFirstEntry = null;
+        int from = step.ordinal();
+        if (from <= Step.OWNER.ordinal()) {
+            zeroize(mOwner);
+            mOwner = null;
+        }
+        if (from <= Step.PROTECTED.ordinal()) {
+            zeroize(mProtected);
+            mProtected = null;
+        }
+        if (from <= Step.DURESS.ordinal()) {
+            zeroize(mDuress);
+            mDuress = null;
+        }
+        if (from <= Step.DURESS_PASSWORD.ordinal()) {
+            zeroize(mDuressPassword);
+            mDuressPassword = null;
+        }
+        if (from <= Step.REBOOT.ordinal()) {
+            zeroize(mReboot);
+            mReboot = null;
+        }
     }
 
     private void onSecondary() {
@@ -245,6 +273,7 @@ public class ProtectedSpaceSetupActivity extends Activity {
         if (mStep == Step.INTRO) {
             finish();
         } else if (mStep == Step.REBOOT) {
+            zeroize(mReboot);
             mReboot = null;
             provision();
         }
