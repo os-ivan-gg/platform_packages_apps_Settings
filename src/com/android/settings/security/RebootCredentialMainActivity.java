@@ -30,8 +30,8 @@ public class RebootCredentialMainActivity extends DuressPasswordActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // the reboot credential belongs to the owner, the service checks user 0's credential
-        if (!getUser().isSystem()) {
+        // only the user that manages the alternate credentials, the service checks its credential
+        if (!getLockPatternUtils().isAlternatesAuthority()) {
             finish();
             return;
         }
@@ -56,6 +56,9 @@ public class RebootCredentialMainActivity extends DuressPasswordActivity
     @Override
     protected void onResume() {
         super.onResume();
+        if (isFinishing()) {
+            return;
+        }
 
         if (userCredential == null) {
             if (!getLockPatternUtils().isSecure(getUserId())) {

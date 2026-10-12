@@ -35,6 +35,11 @@ public class DuressPasswordMainActivity extends DuressPasswordActivity implement
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // only the user that manages the alternate credentials, the service checks its credential
+        if (!getLockPatternUtils().isAlternatesAuthority()) {
+            finish();
+            return;
+        }
 
         var layout = new GlifRecyclerLayout(this);
         this.layout = layout;
@@ -66,6 +71,9 @@ public class DuressPasswordMainActivity extends DuressPasswordActivity implement
     @Override
     protected void onResume() {
         super.onResume();
+        if (isFinishing()) {
+            return;
+        }
 
         if (userCredential == null) {
             if (!getLockPatternUtils().isSecure(getUserId())) {
@@ -91,7 +99,16 @@ public class DuressPasswordMainActivity extends DuressPasswordActivity implement
 
         var g = new ItemGroup();
 
-        if (getLockPatternUtils().hasDuressCredentials(userCredential)) {
+        boolean has;
+        try {
+            has = getLockPatternUtils().hasDuressCredentials(userCredential);
+        } catch (RuntimeException e) {
+            // the authority or its credential changed since the credential was entered
+            Log.e(TAG, "hasDuressCredentials failed", e);
+            finish();
+            return;
+        }
+        if (has) {
             g.addChild(createItem(R.string.duress_pwd_action_update, R.drawable.ic_edit));
             g.addChild(createItem(R.string.duress_pwd_action_delete, R.drawable.ic_delete));
         } else {

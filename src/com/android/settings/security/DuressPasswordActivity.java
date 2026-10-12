@@ -26,6 +26,15 @@ public class DuressPasswordActivity extends Activity {
         setResult(RESULT_OK);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // the user that manages the alternate credentials can change while a screen is open
+        if (!getLockPatternUtils().isAlternatesAuthority()) {
+            finish();
+        }
+    }
+
     protected boolean allowNextOnStop;
 
     @Override

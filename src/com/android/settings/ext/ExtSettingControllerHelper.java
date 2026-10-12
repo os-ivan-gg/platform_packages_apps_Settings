@@ -10,6 +10,8 @@ import android.content.Context;
 import android.ext.settings.Setting;
 import android.provider.Settings;
 
+import com.android.internal.widget.LockPatternUtils;
+
 import java.util.function.Consumer;
 
 import static com.android.settings.core.BasePreferenceController.AVAILABLE;
@@ -27,6 +29,11 @@ public class ExtSettingControllerHelper<T extends Setting> {
 
     public static int getGlobalSettingAvailability(Context ctx) {
         return ctx.getUser().isSystem() ? AVAILABLE : DISABLED_FOR_USER;
+    }
+
+    /** The duress and reboot credentials are managed by one user, user 0 by default. */
+    public static int getAlternatesSettingAvailability(Context ctx) {
+        return new LockPatternUtils(ctx).isAlternatesAuthority() ? AVAILABLE : DISABLED_FOR_USER;
     }
 
     public static int getSecondaryUserOnlySettingAvailability(Context ctx) {

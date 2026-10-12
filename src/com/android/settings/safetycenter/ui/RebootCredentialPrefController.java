@@ -18,7 +18,7 @@ public class RebootCredentialPrefController extends BasePreferenceController {
 
     @Override
     public int getAvailabilityStatus() {
-        return ExtSettingControllerHelper.getGlobalSettingAvailability(mContext);
+        return ExtSettingControllerHelper.getAlternatesSettingAvailability(mContext);
     }
 
     @Override

@@ -66,6 +66,11 @@ public class DuressPasswordSetupActivity extends DuressPasswordActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // only the user that manages the alternate credentials, the service checks its credential
+        if (!getLockPatternUtils().isAlternatesAuthority()) {
+            finish();
+            return;
+        }
 
         setContentView(R.layout.duress_password_setup);
 

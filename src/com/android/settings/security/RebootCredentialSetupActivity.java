@@ -37,7 +37,7 @@ public class RebootCredentialSetupActivity extends DuressPasswordActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!getUser().isSystem()) {
+        if (!getLockPatternUtils().isAlternatesAuthority()) {
             finish();
             return;
         }
