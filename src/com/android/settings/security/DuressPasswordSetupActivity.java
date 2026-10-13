@@ -200,6 +200,10 @@ public class DuressPasswordSetupActivity extends DuressPasswordActivity
             res = false;
         }
         ed.setError(error);
+        if (!res) {
+            // the error popup only shows on the focused field
+            ed.requestFocus();
+        }
         return res;
     }
 

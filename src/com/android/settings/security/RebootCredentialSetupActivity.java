@@ -69,6 +69,10 @@ public class RebootCredentialSetupActivity extends DuressPasswordActivity {
         }
 
         RadioGroup type = requireViewById(R.id.credential_type);
+        // with a protected space the lock screen only takes a PIN of the shared length
+        if (LayoutPinLength.get(this) > 0) {
+            type.setVisibility(View.GONE);
+        }
         type.setOnCheckedChangeListener((group, checkedId) -> updateInputType());
         updateInputType();
 
@@ -206,6 +210,10 @@ public class RebootCredentialSetupActivity extends DuressPasswordActivity {
         }
         c.zeroize();
         ed.setError(error);
+        if (!res) {
+            // the error popup only shows on the focused field
+            ed.requestFocus();
+        }
         return res;
     }
 
@@ -217,6 +225,9 @@ public class RebootCredentialSetupActivity extends DuressPasswordActivity {
         confirmation.setError(res ? null : getText(isPin()
                 ? R.string.lockpassword_confirm_pins_dont_match
                 : R.string.lockpassword_confirm_passwords_dont_match));
+        if (!res) {
+            confirmation.requestFocus();
+        }
         return res;
     }
 }
