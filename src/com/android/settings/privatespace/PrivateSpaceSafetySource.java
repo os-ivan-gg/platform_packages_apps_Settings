@@ -46,14 +46,16 @@ public final class PrivateSpaceSafetySource {
         UserManager userManager = context.getSystemService(UserManager.class);
         PrivateSpaceMaintainer privateSpaceMaintainer =
                 PrivateSpaceMaintainer.getInstance(context);
-        if (android.multiuser.Flags.blockPrivateSpaceCreation()) {
-            // Do not add the entry point when
-            // -Private Profile is not present and
-            // -Private Profile cannot be added.
-            if (!privateSpaceMaintainer.isPrivateSpaceEntryPointEnabled()) {
-                Log.i(TAG, "Private Space not allowed for user " + context.getUser());
-                return;
-            }
+        // Do not add the entry point when
+        // -Private Profile is not present and
+        // -Private Profile cannot be added.
+        // Checked without the flag: the protected space blocks private profiles, and data set
+        // before that is cleared so the entry goes away.
+        if (!privateSpaceMaintainer.isPrivateSpaceEntryPointEnabled()) {
+            Log.i(TAG, "Private Space not allowed for user " + context.getUser());
+            SafetyCenterManagerWrapper.get().setSafetySourceData(
+                    context, SAFETY_SOURCE_ID, null, safetyEvent);
+            return;
         }
 
         // Check the profile type - we don't want to show this for anything other than

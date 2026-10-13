@@ -224,11 +224,11 @@ Duress PIN works the same way duress password does."</string>
     <string name="duress_pwd_collision_reboot">The duress PIN or password is the same as the reboot PIN or password.</string>
 
     <string name="reboot_cred_pref_title">Reboot PIN</string>
-    <string name="reboot_cred_description">"A reboot PIN or password can be entered instead of the user PIN or password in any place that asks for it, such as the lock screen of any user.
+    <string name="reboot_cred_description">"A reboot PIN can be entered instead of your PIN at the lock screen or any other place that asks for a PIN.
 
-Submitting it immediately restarts the device. After the restart, the storage of every user is locked again until that user's PIN or password is entered. Nothing is deleted.
+Submitting it immediately restarts the device. After the restart, every space is locked again until its PIN is entered. Nothing is deleted.
 
-It only works where the same kind of credential is typed: a reboot PIN does nothing at a password prompt. Each use counts as a failed attempt of the user whose prompt was used. It is deleted when the owner removes the screen lock or picks a PIN or password equal to it."</string>
+It has as many digits as the other PINs on this phone and must differ from all of them. Each use counts as a failed attempt. It is deleted when you remove your screen lock."</string>
     <string name="reboot_cred_type_pin">PIN</string>
     <string name="reboot_cred_type_password">Password</string>
     <string name="reboot_cred_enter_pin">Enter reboot PIN</string>
@@ -237,22 +237,22 @@ It only works where the same kind of credential is typed: a reboot PIN does noth
     <string name="reboot_cred_confirm_password">Confirm reboot password</string>
     <string name="reboot_cred_second_factor_title">Owner second-factor PIN</string>
     <string name="reboot_cred_second_factor_hint">Enter the PIN used after fingerprint unlock</string>
-    <string name="reboot_cred_action_add">Add reboot PIN or password</string>
-    <string name="reboot_cred_action_update">Update reboot PIN or password</string>
-    <string name="reboot_cred_action_delete">Delete reboot PIN or password</string>
-    <string name="reboot_cred_action_delete_confirmation">Delete the reboot PIN or password?</string>
-    <string name="reboot_cred_toast_added">Added reboot PIN or password</string>
-    <string name="reboot_cred_toast_updated">Updated reboot PIN or password</string>
-    <string name="reboot_cred_save_error">Reboot PIN or password was not saved.\n\nDetails:\n%1$s</string>
-    <string name="reboot_cred_delete_error">Reboot PIN or password was not deleted.\n\nDetails:\n%1$s</string>
-    <string name="reboot_cred_collision_owner">It is the same as the owner\'s PIN or password.</string>
+    <string name="reboot_cred_action_add">Add reboot PIN</string>
+    <string name="reboot_cred_action_update">Update reboot PIN</string>
+    <string name="reboot_cred_action_delete">Delete reboot PIN</string>
+    <string name="reboot_cred_action_delete_confirmation">Delete the reboot PIN?</string>
+    <string name="reboot_cred_toast_added">Added reboot PIN</string>
+    <string name="reboot_cred_toast_updated">Updated reboot PIN</string>
+    <string name="reboot_cred_save_error">Reboot PIN was not saved.\n\nDetails:\n%1$s</string>
+    <string name="reboot_cred_delete_error">Reboot PIN was not deleted.\n\nDetails:\n%1$s</string>
+    <string name="reboot_cred_collision_owner">It is the same as your screen lock PIN.</string>
     <string name="reboot_cred_collision_second_factor">It is the same as the owner\'s second-factor PIN.</string>
     <string name="reboot_cred_collision_duress">It is the same as the duress PIN or password.</string>
-    <string name="reboot_cred_needs_lock">Set a screen lock first. A reboot PIN or password can only be added when the device has a PIN or password.</string>
-    <string name="reboot_cred_status_error">The reboot PIN or password could not be checked.\n\nDetails:\n%1$s</string>
+    <string name="reboot_cred_needs_lock">Set a screen lock first. A reboot PIN can only be added when the device has a PIN.</string>
+    <string name="reboot_cred_status_error">The reboot PIN could not be checked.\n\nDetails:\n%1$s</string>
     <string name="reboot_cred_second_factor_missing">Enter the second-factor PIN</string>
     <string name="reboot_cred_owner_changed">The screen lock changed meanwhile. Try again.</string>
-    <string name="reboot_cred_corrupt">The stored reboot PIN or password can\'t be read. Delete it and add it again.</string>
+    <string name="reboot_cred_corrupt">The stored reboot PIN can\'t be read. Delete it and add it again.</string>
 
     <string name="alt_touchscreen_mode_title">Alternative touchscreen mode</string>
     <string name="alt_touchscreen_mode_summary">This mode is less susceptible to ghost touches. Don’t enable it unless you are experiencing touchscreen issues.</string>
