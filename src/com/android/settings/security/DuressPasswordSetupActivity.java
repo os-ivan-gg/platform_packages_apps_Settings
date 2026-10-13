@@ -177,6 +177,9 @@ public class DuressPasswordSetupActivity extends DuressPasswordActivity
     // the service reports a collision with the reboot credential with a fixed message
     private String describe(Exception e) {
         for (Throwable t = e; t != null; t = t.getCause()) {
+            if (String.valueOf(t.getMessage()).startsWith("collision: other space PIN")) {
+                return getString(R.string.layout_alternate_taken);
+            }
             if (String.valueOf(t.getMessage()).startsWith("collision: reboot credential")) {
                 return getString(R.string.duress_pwd_collision_reboot);
             }

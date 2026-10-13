@@ -186,6 +186,8 @@ public class RebootCredentialSetupActivity extends DuressPasswordActivity {
                 return getString(R.string.reboot_cred_collision_second_factor);
             } else if (msg.startsWith("collision: duress credential")) {
                 return getString(R.string.reboot_cred_collision_duress);
+            } else if (msg.startsWith("collision: other space PIN")) {
+                return getString(R.string.layout_alternate_taken);
             } else if (msg.startsWith("owner credential changed")) {
                 return getString(R.string.reboot_cred_owner_changed);
             }
