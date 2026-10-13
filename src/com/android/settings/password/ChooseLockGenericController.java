@@ -197,9 +197,12 @@ public class ChooseLockGenericController {
     // any other type)
     private boolean isLayoutUser() {
         try {
-            final int authority = mLockPatternUtils.getAlternatesAuthority();
-            return authority != UserHandle.USER_SYSTEM && authority != UserHandle.USER_NULL
-                    && (mUserId == UserHandle.USER_SYSTEM || mUserId == authority);
+            // user 0 doesn't see the authority, only that a PIN length is set
+            if (mLockPatternUtils.getLayoutPinLength() <= 0) {
+                return false;
+            }
+            return mUserId == UserHandle.USER_SYSTEM
+                    || mUserId == mLockPatternUtils.getAlternatesAuthority();
         } catch (RuntimeException e) {
             return false;
         }
