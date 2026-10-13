@@ -196,6 +196,8 @@ public class DuressPasswordSetupActivity extends DuressPasswordActivity
             res = false;
             var pvec = new PasswordValidationErrorConverter(this, c.isPassword(), ChooseLockPassword.ChooseLockPasswordFragment.ProfileType.None, errors);
             error = String.join("\n", pvec.convertErrorCodeToMessages());
+        } else if ((error = LayoutPinLength.error(this, c)) != null) {
+            res = false;
         }
         ed.setError(error);
         return res;

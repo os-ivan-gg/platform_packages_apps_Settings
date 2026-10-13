@@ -201,6 +201,8 @@ public class RebootCredentialSetupActivity extends DuressPasswordActivity {
             var pvec = new PasswordValidationErrorConverter(this, c.isPassword(),
                     ChooseLockPassword.ChooseLockPasswordFragment.ProfileType.None, errors);
             error = String.join("\n", pvec.convertErrorCodeToMessages());
+        } else if ((error = LayoutPinLength.error(this, c)) != null) {
+            res = false;
         }
         c.zeroize();
         ed.setError(error);

@@ -2,7 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="protected_space_title">Protected space</string>
     <string name="protected_space_pref_summary">A second space opened with its own PIN from the same lock screen</string>
-    <string name="protected_space_intro">Set up a second space with its own PIN. You open it from the same lock screen by entering its PIN instead of yours. Everywhere else, this phone looks and works as usual and doesn\'t show the protected space.\n\nYou can also choose a duress PIN, which wipes the phone, and a reboot PIN, which restarts it so everything is locked again. Both are optional.</string>
+    <string name="protected_space_intro">Set up a second space with its own PIN. You open it from the same lock screen by entering its PIN instead of yours. Everywhere else, this phone looks and works as usual and doesn\'t show the protected space.\n\nYou can also choose a duress PIN, which wipes the phone, and a reboot PIN, which restarts it so everything is locked again. Both are optional.\n\nAll PINs on this phone then have as many digits as yours, and keep that length when changed later.</string>
     <string name="protected_space_set_up">Set up</string>
     <string name="protected_space_skip">Skip</string>
     <string name="protected_space_next">Next</string>
@@ -11,7 +11,7 @@
     <string name="protected_space_owner_header">Enter your PIN</string>
     <string name="protected_space_owner_description">Confirm the PIN you use to unlock this phone.</string>
     <string name="protected_space_protected_header">Choose a PIN for the protected space</string>
-    <string name="protected_space_protected_description">Entering this PIN on the lock screen opens the protected space. Use 6 digits or more, different from your PIN.</string>
+    <string name="protected_space_protected_description">Entering this PIN on the lock screen opens the protected space. It has as many digits as your PIN and must differ from it.</string>
     <string name="protected_space_duress_header">Choose a duress PIN</string>
     <string name="protected_space_duress_description">Optional. For when you\'re forced to unlock: entering this PIN on the lock screen or any PIN prompt erases everything on the phone, both spaces and eSIMs included, and turns it off. This can\'t be undone. It must differ from the other PINs.</string>
     <string name="protected_space_duress_password_header">Choose a duress password</string>
@@ -26,7 +26,9 @@
     <string name="protected_space_too_short">Must be 6 digits or more</string>
     <string name="protected_space_password_too_short">Must be at least 4 characters</string>
     <string name="protected_space_mismatch">Doesn\'t match, try again</string>
-    <string name="protected_space_auto_confirm_length">Auto-confirm is on, so use <xliff:g id="digits">%1$d</xliff:g> digits, as many as your PIN</string>
+    <string name="protected_space_pin_length">Use <xliff:g id="digits">%1$d</xliff:g> digits, as many as your PIN</string>
+    <!-- shown on PIN screens once a protected space exists -->
+    <string name="layout_pin_length">Use <xliff:g id="digits">%1$d</xliff:g> digits, like the other PINs on this phone</string>
     <string name="protected_space_taken">Choose a different PIN</string>
     <string name="protected_space_wrong_owner">Wrong PIN</string>
     <string name="protected_space_failed">Couldn\'t set up the protected space: <xliff:g id="reason">%1$s</xliff:g></string>

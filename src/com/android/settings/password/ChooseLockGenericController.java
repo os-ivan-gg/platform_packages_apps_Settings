@@ -162,6 +162,9 @@ public class ChooseLockGenericController {
      * Returns whether the given screen lock type should be visible in the given context.
      */
     public boolean isScreenLockVisible(ScreenLockType type) {
+        if (type != ScreenLockType.PIN && isLayoutUser()) {
+            return false;
+        }
         final boolean managedProfile = mContext.getSystemService(UserManager.class)
                 .isManagedProfile(mUserId);
         switch (type) {
@@ -188,6 +191,18 @@ public class ChooseLockGenericController {
                 return mLockPatternUtils.hasSecureLockScreen();
         }
         return true;
+    }
+
+    // with a protected space, user 0 and the protected user keep a PIN (lock_settings refuses
+    // any other type)
+    private boolean isLayoutUser() {
+        try {
+            final int authority = mLockPatternUtils.getAlternatesAuthority();
+            return authority != UserHandle.USER_SYSTEM && authority != UserHandle.USER_NULL
+                    && (mUserId == UserHandle.USER_SYSTEM || mUserId == authority);
+        } catch (RuntimeException e) {
+            return false;
+        }
     }
 
     /**

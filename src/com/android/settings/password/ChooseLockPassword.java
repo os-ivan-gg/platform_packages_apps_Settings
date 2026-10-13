@@ -97,6 +97,7 @@ import com.android.internal.widget.TextViewInputDisabler;
 import com.android.settings.R;
 import com.android.settings.SettingsActivity;
 import com.android.settings.SetupWizardUtils;
+import com.android.settings.security.LayoutPinLength;
 import com.android.settings.Utils;
 import com.android.settings.core.InstrumentedFragment;
 import com.android.settings.flags.Flags;
@@ -275,6 +276,8 @@ public class ChooseLockPassword extends SettingsActivity {
         @PasswordComplexity private int mMinComplexity = PASSWORD_COMPLEXITY_NONE;
         protected int mUserId;
         private byte[] mPasswordHistoryHashFactor;
+        // the length every PIN has with a protected space, 0 without, -1 until read
+        private int mLayoutPinLength = -1;
         private int mUnificationProfileId = UserHandle.USER_NULL;
 
         private LockPatternUtils mLockPatternUtils;
@@ -891,6 +894,17 @@ public class ChooseLockPassword extends SettingsActivity {
         boolean validatePassword(LockscreenCredential credential) {
             mValidationErrors = PasswordMetrics.validateCredential(mMinMetrics, mMinComplexity,
                     credential);
+            // with a protected space every PIN has the same length (LayoutPinLength)
+            if (mValidationErrors.isEmpty() && !mIsAlphaMode) {
+                if (mLayoutPinLength < 0) {
+                    mLayoutPinLength = LayoutPinLength.get(getContext());
+                }
+                if (mLayoutPinLength > 0 && credential.size() != mLayoutPinLength) {
+                    mValidationErrors = Collections.singletonList(new PasswordValidationError(
+                            credential.size() < mLayoutPinLength ? TOO_SHORT : TOO_LONG,
+                            mLayoutPinLength));
+                }
+            }
             if (mValidationErrors.isEmpty() && mLockPatternUtils.checkPasswordHistory(
                         credential.getCredential(), getPasswordHistoryHashFactor(), mUserId)) {
                 mValidationErrors =

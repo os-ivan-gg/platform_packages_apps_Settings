@@ -332,11 +332,9 @@ public class ProtectedSpaceSetupActivity extends Activity {
         return s.length() >= MIN_PIN && s.chars().allMatch(Character::isDigit);
     }
 
-    // With auto-confirm the lock screen submits as soon as the owner's PIN length is typed,
-    // so a longer PIN could never be entered; every PIN then has the owner's length.
-    private boolean wrongLengthForAutoConfirm(String s) {
-        return mOwner != null && s.length() != mOwner.size()
-                && new LockPatternUtils(this).isAutoPinConfirmEnabled(UserHandle.USER_SYSTEM);
+    // every PIN has the owner's length, so auto-confirm works for all of them whenever it's on
+    private boolean wrongLength(String s) {
+        return mOwner != null && s.length() != mOwner.size();
     }
 
     // a new PIN must differ from every credential chosen before it
@@ -369,8 +367,8 @@ public class ProtectedSpaceSetupActivity extends Activity {
                     error(R.string.protected_space_too_short);
                     return;
                 }
-                if (wrongLengthForAutoConfirm(text)) {
-                    mError.setText(getString(R.string.protected_space_auto_confirm_length,
+                if (wrongLength(text)) {
+                    mError.setText(getString(R.string.protected_space_pin_length,
                             mOwner.size()));
                     mInput.getText().clear();
                     return;
