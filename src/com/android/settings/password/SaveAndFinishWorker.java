@@ -58,7 +58,7 @@ public class SaveAndFinishWorker extends Fragment {
     private LockscreenCredential mCurrentCredential;
 
     private boolean mBlocking;
-    private boolean mPinTaken;
+    private int mFailureText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,6 +86,7 @@ public class SaveAndFinishWorker extends Fragment {
         // This will be a no-op for non managed profiles.
         mWasSecureBefore = mUtils.isSecure(mUserId);
         mFinished = false;
+        mFailureText = 0;
         mResultData = null;
 
         mChosenCredential = chosenCredential;
@@ -117,8 +118,11 @@ public class SaveAndFinishWorker extends Fragment {
             }
         } catch (RuntimeException e) {
             Log.e(TAG, "Failed to set lockscreen credential", e);
-            // lock_settings refuses a PIN another space or an alternate already has
-            mPinTaken = String.valueOf(e.getMessage()).startsWith("collision:");
+            // lock_settings refuses a PIN another space or an alternate already has, and
+            // one it can't compare while the other space is rate-limited
+            final String msg = String.valueOf(e.getMessage());
+            mFailureText = msg.startsWith("collision:") ? R.string.layout_pin_taken
+                    : msg.startsWith("can't compare") ? R.string.layout_pin_try_later : 0;
             return Pair.create(false, null);
         }
 
@@ -223,7 +227,7 @@ public class SaveAndFinishWorker extends Fragment {
         @Override
         protected void onPostExecute(Pair<Boolean, Intent> resultData) {
             if (!resultData.first) {
-                Toast.makeText(getContext(), mPinTaken ? R.string.layout_pin_taken
+                Toast.makeText(getContext(), mFailureText != 0 ? mFailureText
                         : R.string.lockpassword_credential_changed, Toast.LENGTH_LONG).show();
             }
             finish(resultData.second);
