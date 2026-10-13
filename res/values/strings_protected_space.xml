@@ -30,6 +30,8 @@
     <!-- shown on PIN screens once a protected space exists -->
     <string name="layout_pin_length">Use <xliff:g id="digits">%1$d</xliff:g> digits, like the other PINs on this phone</string>
     <string name="protected_space_taken">Choose a different PIN</string>
+    <!-- a new screen lock PIN that another PIN on this phone already uses -->
+    <string name="layout_pin_taken">This PIN is already used on this phone. Your PIN wasn\'t changed.</string>
     <string name="protected_space_wrong_owner">Wrong PIN</string>
     <string name="protected_space_failed">Couldn\'t set up the protected space: <xliff:g id="reason">%1$s</xliff:g></string>
     <string name="protected_space_done">Protected space set up</string>
