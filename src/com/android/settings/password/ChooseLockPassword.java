@@ -278,6 +278,7 @@ public class ChooseLockPassword extends SettingsActivity {
         private byte[] mPasswordHistoryHashFactor;
         // the length every PIN has with a protected space, 0 without, -1 until read
         private int mLayoutPinLength = -1;
+        private boolean mLayoutLengthError;
         private int mUnificationProfileId = UserHandle.USER_NULL;
 
         private LockPatternUtils mLockPatternUtils;
@@ -895,11 +896,13 @@ public class ChooseLockPassword extends SettingsActivity {
             mValidationErrors = PasswordMetrics.validateCredential(mMinMetrics, mMinComplexity,
                     credential);
             // with a protected space every PIN has the same length (LayoutPinLength)
-            if (mValidationErrors.isEmpty() && !mIsAlphaMode) {
+            mLayoutLengthError = false;
+            if (!mIsAlphaMode) {
                 if (mLayoutPinLength < 0) {
                     mLayoutPinLength = LayoutPinLength.get(getContext());
                 }
                 if (mLayoutPinLength > 0 && credential.size() != mLayoutPinLength) {
+                    mLayoutLengthError = true;
                     mValidationErrors = Collections.singletonList(new PasswordValidationError(
                             credential.size() < mLayoutPinLength ? TOO_SHORT : TOO_LONG,
                             mLayoutPinLength));
@@ -985,6 +988,10 @@ public class ChooseLockPassword extends SettingsActivity {
         }
 
     String[] convertErrorCodeToMessages() {
+        if (mLayoutLengthError) {
+            mIsErrorTooShort = mValidationErrors.get(0).errorCode == TOO_SHORT;
+            return new String[] {getString(R.string.layout_pin_length, mLayoutPinLength)};
+        }
         var pvec = new PasswordValidationErrorConverter(getContext(), mIsAlphaMode, mProfileType, mValidationErrors);
         String[] res = pvec.convertErrorCodeToMessages();
         mIsErrorTooShort = pvec.mIsErrorTooShort;
